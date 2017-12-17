@@ -1,36 +1,64 @@
 import React, { Component } from 'react';
+import { Link, Route } from 'react-router-dom';
 
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI';
 import './App.css';
 import ListShelves from './ListShelves';
 import SearchBar from './SearchBar';
 
 class BooksApp extends Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false
+    books: [],
+  }
+
+  componentDidMount() {
+    BooksAPI.getAll().then((books) => {
+      this.setState({ books });
+    });
   }
 
   render() {
+    const sectionNames = {
+      currentlyReading: 'Currently Reading',
+      wantToRead: 'Want to Read',
+      read: 'Read',
+    };
+    const sections = ['currentlyReading', 'wantToRead', 'read'];
     return (
       <div className="app">
-          <div className="open-search">
-            <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-          </div>
-        <SearchBar />
-        <div className="list-books">
-          <div className="list-books-title">
-            <h1>
-              {this.props.appName}
-            </h1>
-          </div>
-          <ListShelves />
+        <div className="open-search">
+          <Link
+            to="/search"
+            href="/search"
+          >Add a book
+          </Link>
         </div>
+        <Route
+          path="/search"
+          render={() => (
+            <div>
+              <SearchBar />
+            </div>
+          )}
+        />
+        <Route
+          path="/"
+          exact
+          render={() => (
+            <div className="list-books">
+              <div className="list-books-title">
+                <h1>
+                  {this.props.appName}
+                </h1>
+              </div>
+              <ListShelves
+                sections={sections}
+                sectionNames={sectionNames}
+                books={this.state.books}
+              />
+            </div>
+          )}
+        />
       </div>
     );
   }
