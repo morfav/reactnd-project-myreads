@@ -17,6 +17,14 @@ class BooksApp extends Component {
     });
   }
 
+  setBookshelf(id, newShelf) {
+    const bookToUpdate = this.state.books.find(book => book.id === id);
+    bookToUpdate.shelf = newShelf;
+    this.setState({
+      books: [...this.state.books.filter(book => book.id !== id), bookToUpdate],
+    });
+  }
+
   render() {
     const sectionNames = {
       currentlyReading: 'Currently Reading',
@@ -26,13 +34,6 @@ class BooksApp extends Component {
     const sections = ['currentlyReading', 'wantToRead', 'read'];
     return (
       <div className="app">
-        <div className="open-search">
-          <Link
-            to="/search"
-            href="/search"
-          >Add a book
-          </Link>
-        </div>
         <Route
           path="/search"
           render={() => (
@@ -45,17 +46,28 @@ class BooksApp extends Component {
           path="/"
           exact
           render={() => (
-            <div className="list-books">
-              <div className="list-books-title">
-                <h1>
-                  {this.props.appName}
-                </h1>
+            <div>
+              <div className="list-books">
+                <div className="list-books-title">
+                  <h1>
+                    {this.props.appName}
+                  </h1>
+                </div>
+                <ListShelves
+                  sections={sections}
+                  sectionNames={sectionNames}
+                  books={this.state.books}
+                  setBookshelf={(id, newShelf) => { this.setBookshelf(id, newShelf); }}
+                />
               </div>
-              <ListShelves
-                sections={sections}
-                sectionNames={sectionNames}
-                books={this.state.books}
-              />
+              <div className="open-search">
+                <Link
+                  to="/search"
+                  href="/search"
+                >
+                  Add a book
+                </Link>
+              </div>
             </div>
           )}
         />

@@ -11,6 +11,9 @@ class ListShelves extends Component {
             key={section}
             title={this.props.sectionNames[section]}
             books={this.props.books.filter(book => book.shelf === section)}
+            sectionNames={this.props.sectionNames}
+            sections={this.props.sections}
+            setBookshelf={(id, newBookshelf) => this.props.setBookshelf(id, newBookshelf)}
           />
         )
         }
