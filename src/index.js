@@ -9,5 +9,5 @@ ReactDOM.render(
   <BrowserRouter>
     <App appName="My Reads" />
   </BrowserRouter>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

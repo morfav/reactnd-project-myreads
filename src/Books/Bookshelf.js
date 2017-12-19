@@ -3,10 +3,16 @@ import React, { Component } from 'react';
 import Book from './Book';
 
 class Bookshelf extends Component {
-  // setBookshelf(id, newShelf) {
-  //   this.props.setBookshelf(id, newShelf);
-  // }
-  
+  constructor(props) {
+    super(props);
+
+    this.changeShelf = this.changeShelf.bind(this);
+  }
+
+  changeShelf(bookId, newShelf) {
+    this.props.changeShelf(bookId, newShelf);
+  }
+
   render() {
     return (
       <div className="bookshelf">
@@ -19,7 +25,7 @@ class Bookshelf extends Component {
                   {...book}
                   sections={this.props.sections}
                   sectionNames={this.props.sectionNames}
-                  setBookshelf={newBookshelf => this.props.setBookshelf(book.id, newBookshelf)}
+                  changeShelf={newShelf => this.changeShelf(book.id, newShelf)}
                 />
               </li>
             ))}

@@ -7,6 +7,12 @@ import ListShelves from './ListShelves';
 import SearchBar from './SearchBar';
 
 class BooksApp extends Component {
+  constructor(props) {
+    super(props);
+
+    this.changeShelf = this.changeShelf.bind(this);
+  }
+
   state = {
     books: [],
   }
@@ -17,7 +23,7 @@ class BooksApp extends Component {
     });
   }
 
-  setBookshelf(id, newShelf) {
+  changeShelf(id, newShelf) {
     const bookToUpdate = this.state.books.find(book => book.id === id);
     bookToUpdate.shelf = newShelf;
     this.setState({
@@ -57,7 +63,7 @@ class BooksApp extends Component {
                   sections={sections}
                   sectionNames={sectionNames}
                   books={this.state.books}
-                  setBookshelf={(id, newShelf) => { this.setBookshelf(id, newShelf); }}
+                  changeShelf={(id, newShelf) => this.changeShelf(id, newShelf)}
                 />
               </div>
               <div className="open-search">
