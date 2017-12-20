@@ -19,7 +19,16 @@ class SearchBar extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const serializedForm = serializeForm(e.target, { hash: true });
-    BooksAPI.search(serializedForm.searchQuery).then((books) => {
+    const books = [];
+    BooksAPI.search(serializedForm.searchQuery).then((rawBooks) => {
+      rawBooks.map((rawBook) => {
+        if (this.props.idToShelfMap.has(rawBook.id)) {
+          rawBook.shelf = this.props.idToShelfMap.get(rawBook.id);
+        } else {
+          rawBook.shelf = 'none';
+        }
+        books.push(rawBook);
+      });
       this.setState({ books });
     });
   }

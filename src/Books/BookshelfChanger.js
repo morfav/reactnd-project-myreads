@@ -18,7 +18,7 @@ class BookshelfChanger extends Component {
           defaultValue={this.props.shelf}
           onChange={event => this.changeShelf(event.target.value)}
         >
-          <option value="none" disabled>Move to...</option>
+          <option value="moveTo" disabled>Move to...</option>
           {this.props.sections.map(section => (
             <option key={section} value={section}>
               {this.props.sectionNames[section]}

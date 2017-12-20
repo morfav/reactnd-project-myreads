@@ -19,15 +19,23 @@ class BooksApp extends Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({ books });
+      const idToShelfMap = new Map();
+      books.map(book => idToShelfMap.set(book.id, book.shelf));
+      this.setState({
+        books,
+        idToShelfMap,
+      });
     });
   }
 
   changeShelf(id, newShelf) {
     const bookToUpdate = this.state.books.find(book => book.id === id);
     bookToUpdate.shelf = newShelf;
+    const { idToShelfMap } = this.state;
+    idToShelfMap.set(id, newShelf);
     this.setState({
       books: [...this.state.books.filter(book => book.id !== id), bookToUpdate],
+      idToShelfMap,
     });
   }
 
@@ -47,6 +55,7 @@ class BooksApp extends Component {
               <SearchBar
                 sections={sections}
                 sectionNames={sectionNames}
+                idToShelfMap={this.state.idToShelfMap}
               />
             </div>
           )}
