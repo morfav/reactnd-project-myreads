@@ -44,7 +44,10 @@ class BooksApp extends Component {
           path="/search"
           render={() => (
             <div>
-              <SearchBar />
+              <SearchBar
+                sections={sections}
+                sectionNames={sectionNames}
+              />
             </div>
           )}
         />

@@ -1,36 +1,65 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import serializeForm from 'form-serialize';
+
+import * as BooksAPI from './BooksAPI';
+import Book from './Books/Book';
 
 class SearchBar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  state = {
+    books: [],
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const serializedForm = serializeForm(e.target, { hash: true });
+    BooksAPI.search(serializedForm.searchQuery).then((books) => {
+      this.setState({ books });
+    });
+  }
+
   render() {
-    return(
+    return (
       <div className="search-books">
-        <div className="search-books-bar">
-          <Link
-            href="/"
-            to="/"
-            className="close-search"
-          >
-            Close
-          </Link>
-        <div className="search-books-input-wrapper">
-          {/*
-            NOTES: The search from BooksAPI is limited to a particular set of search terms.
-            You can find these search terms here:
-            https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-            However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-            you don't find a specific author or title. Every search is limited by search terms.
-          */}
-          <input type="text" placeholder="Search by title or author"/>
-
+        <form
+          onSubmit={this.handleSubmit}
+          className="search-books"
+        >
+          <div className="search-books-bar">
+            <Link
+              href="/"
+              to="/"
+              className="close-search"
+            >
+              Close
+            </Link>
+            <div className="search-books-input-wrapper">
+              <input type="text" name="searchQuery" placeholder="Search by title or author" />
+            </div>
+          </div>
+        </form>
+        <div className="search-books-results">
+          <ol className="books-grid">
+            {this.state.books.map(book => (
+              <li key={book.id}>
+                <Book
+                  {...book}
+                  sections={this.props.sections}
+                  sectionNames={this.props.sectionNames}
+                  changeShelf={newShelf => this.changeShelf(book.id, newShelf)}
+                />
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
-      <div className="search-books-results">
-        <ol className="books-grid"></ol>
-      </div>
-    </div>
-    )
+    );
   }
 }
 
