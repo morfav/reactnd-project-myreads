@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import * as BooksAPI from './BooksAPI';
 import './App.css';
@@ -15,11 +16,12 @@ class BooksApp extends Component {
 
   state = {
     books: [],
+    idToShelfMap: new Map(),
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      const idToShelfMap = new Map();
+      const { idToShelfMap } = this.state;
       books.map(book => idToShelfMap.set(book.id, book.shelf));
       this.setState({
         books,
@@ -28,13 +30,13 @@ class BooksApp extends Component {
     });
   }
 
-  changeShelf(id, newShelf) {
-    const bookToUpdate = this.state.books.find(book => book.id === id);
-    bookToUpdate.shelf = newShelf;
+  changeShelf(bookToChange, newShelf) {
+    const bookCopy = bookToChange;
+    bookCopy.shelf = newShelf;
     const { idToShelfMap } = this.state;
-    idToShelfMap.set(id, newShelf);
+    idToShelfMap.set(bookCopy.id, newShelf);
     this.setState({
-      books: [...this.state.books.filter(book => book.id !== id), bookToUpdate],
+      books: [...this.state.books.filter(book => book.id !== bookCopy.id), bookCopy],
       idToShelfMap,
     });
   }
@@ -56,6 +58,7 @@ class BooksApp extends Component {
                 sections={sections}
                 sectionNames={sectionNames}
                 idToShelfMap={this.state.idToShelfMap}
+                changeShelf={(bookToChange, newShelf) => this.changeShelf(bookToChange, newShelf)}
               />
             </div>
           )}
@@ -75,7 +78,7 @@ class BooksApp extends Component {
                   sections={sections}
                   sectionNames={sectionNames}
                   books={this.state.books}
-                  changeShelf={(id, newShelf) => this.changeShelf(id, newShelf)}
+                  changeShelf={(bookToChange, newShelf) => this.changeShelf(bookToChange, newShelf)}
                 />
               </div>
               <div className="open-search">
@@ -93,5 +96,9 @@ class BooksApp extends Component {
     );
   }
 }
+
+BooksApp.propTypes = {
+  appName: PropTypes.string.isRequired,
+};
 
 export default BooksApp;

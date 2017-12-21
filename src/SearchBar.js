@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import serializeForm from 'form-serialize';
+import PropTypes from 'prop-types';
 
 import * as BooksAPI from './BooksAPI';
 import Book from './Books/Book';
@@ -16,18 +17,21 @@ class SearchBar extends Component {
     books: [],
   }
 
+  changeShelf(bookToChange, newShelf) {
+    this.props.changeShelf(bookToChange, newShelf);
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     const serializedForm = serializeForm(e.target, { hash: true });
     const books = [];
     BooksAPI.search(serializedForm.searchQuery).then((rawBooks) => {
       rawBooks.map((rawBook) => {
-        if (this.props.idToShelfMap.has(rawBook.id)) {
-          rawBook.shelf = this.props.idToShelfMap.get(rawBook.id);
-        } else {
-          rawBook.shelf = 'none';
+        const rawBookCopy = rawBook;
+        if (this.props.idToShelfMap.has(rawBookCopy.id)) {
+          rawBookCopy.shelf = this.props.idToShelfMap.get(rawBookCopy.id);
         }
-        books.push(rawBook);
+        books.push(rawBookCopy);
       });
       this.setState({ books });
     });
@@ -61,7 +65,7 @@ class SearchBar extends Component {
                   {...book}
                   sections={this.props.sections}
                   sectionNames={this.props.sectionNames}
-                  changeShelf={newShelf => this.changeShelf(book.id, newShelf)}
+                  changeShelf={newShelf => this.changeShelf(book, newShelf)}
                 />
               </li>
             ))}
@@ -71,5 +75,12 @@ class SearchBar extends Component {
     );
   }
 }
+
+SearchBar.propTypes = {
+  changeShelf: PropTypes.func.isRequired,
+  idToShelfMap: PropTypes.instanceOf(Map).isRequired,
+  sections: PropTypes.arrayOf(String).isRequired,
+  sectionNames: PropTypes.instanceOf(Object).isRequired,
+};
 
 export default SearchBar;

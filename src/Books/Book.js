@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import BookshelfChanger from './BookshelfChanger';
 
@@ -27,10 +28,26 @@ class Book extends Component {
           </div>
         </div>
         <div className="book-title">{this.props.title}</div>
-        <div className="book-authors">{this.props.authors ? this.props.authors.join(", ") : ''}</div>
+        <div className="book-authors">{this.props.authors.join(', ')}</div>
       </div>
     );
   }
 }
+
+Book.propTypes = {
+  authors: PropTypes.instanceOf(Object),
+  changeShelf: PropTypes.func.isRequired,
+  imageLinks: PropTypes.instanceOf(Object),
+  sections: PropTypes.arrayOf(String).isRequired,
+  sectionNames: PropTypes.instanceOf(Object).isRequired,
+  shelf: PropTypes.string,
+  title: PropTypes.string.isRequired,
+};
+
+Book.defaultProps = {
+  authors: [],
+  imageLinks: { thumbnail: '' },
+  shelf: 'none',
+};
 
 export default Book;

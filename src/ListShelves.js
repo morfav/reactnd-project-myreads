@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Bookshelf from './Books/Bookshelf';
 
@@ -9,8 +10,8 @@ class ListShelves extends Component {
     this.changeShelf = this.changeShelf.bind(this);
   }
 
-  changeShelf(bookId, newShelf) {
-    this.props.changeShelf(bookId, newShelf);
+  changeShelf(bookToChange, newShelf) {
+    this.props.changeShelf(bookToChange, newShelf);
   }
 
   render() {
@@ -23,11 +24,18 @@ class ListShelves extends Component {
             books={this.props.books.filter(book => book.shelf === section)}
             sectionNames={this.props.sectionNames}
             sections={this.props.sections}
-            changeShelf={(bookId, newShelf) => this.changeShelf(bookId, newShelf)}
+            changeShelf={(bookToChange, newShelf) => this.changeShelf(bookToChange, newShelf)}
           />))}
       </div>
     );
   }
 }
+
+ListShelves.propTypes = {
+  books: PropTypes.arrayOf(Object).isRequired,
+  changeShelf: PropTypes.func.isRequired,
+  sections: PropTypes.arrayOf(String).isRequired,
+  sectionNames: PropTypes.instanceOf(Object).isRequired,
+};
 
 export default ListShelves;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Book from './Book';
 
@@ -9,8 +10,8 @@ class Bookshelf extends Component {
     this.changeShelf = this.changeShelf.bind(this);
   }
 
-  changeShelf(bookId, newShelf) {
-    this.props.changeShelf(bookId, newShelf);
+  changeShelf(bookToChange, newShelf) {
+    this.props.changeShelf(bookToChange, newShelf);
   }
 
   render() {
@@ -25,7 +26,7 @@ class Bookshelf extends Component {
                   {...book}
                   sections={this.props.sections}
                   sectionNames={this.props.sectionNames}
-                  changeShelf={newShelf => this.changeShelf(book.id, newShelf)}
+                  changeShelf={newShelf => this.changeShelf(book, newShelf)}
                 />
               </li>
             ))}
@@ -35,5 +36,13 @@ class Bookshelf extends Component {
     );
   }
 }
+
+Bookshelf.propTypes = {
+  books: PropTypes.arrayOf(Object).isRequired,
+  changeShelf: PropTypes.func.isRequired,
+  sections: PropTypes.arrayOf(String).isRequired,
+  sectionNames: PropTypes.instanceOf(Object).isRequired,
+  title: PropTypes.string.isRequired,
+};
 
 export default Bookshelf;
