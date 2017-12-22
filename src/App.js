@@ -39,6 +39,7 @@ class BooksApp extends Component {
       books: [...this.state.books.filter(book => book.id !== bookCopy.id), bookCopy],
       idToShelfMap,
     });
+    BooksAPI.update(bookCopy, newShelf);
   }
 
   render() {

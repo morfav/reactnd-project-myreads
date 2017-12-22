@@ -24,20 +24,26 @@ class SearchBar extends Component {
 
   fetchBooksAndUpdate() {
     const books = [];
-    BooksAPI.search(this.state.searchQuery).then((rawBooks) => {
-      if (Array.isArray(rawBooks)) {
-        rawBooks.map((rawBook) => {
-          const rawBookCopy = rawBook;
-          if (this.props.idToShelfMap.has(rawBookCopy.id)) {
-            rawBookCopy.shelf = this.props.idToShelfMap.get(rawBookCopy.id);
-          }
-          books.push(rawBookCopy);
+    if (this.state.searchQuery !== '') {
+      BooksAPI.search(this.state.searchQuery).then((rawBooks) => {
+        if (Array.isArray(rawBooks)) {
+          rawBooks.map((rawBook) => {
+            const rawBookCopy = rawBook;
+            if (this.props.idToShelfMap.has(rawBookCopy.id)) {
+              rawBookCopy.shelf = this.props.idToShelfMap.get(rawBookCopy.id);
+            }
+            books.push(rawBookCopy);
+          });
+        }
+        this.setState({
+          books,
         });
-      }
+      });
+    } else {
       this.setState({
         books,
       });
-    });
+    }
     clearTimeout(this.myTimer);
   }
 
