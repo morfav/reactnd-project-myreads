@@ -81,6 +81,7 @@ class SearchBar extends Component {
             </Link>
             <div className="search-books-input-wrapper">
               <input
+                ref={input => input && input.focus()}
                 type="text"
                 name="searchQuery"
                 placeholder="Search by title or author"
