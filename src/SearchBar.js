@@ -24,7 +24,7 @@ class SearchBar extends Component {
 
   fetchBooksAndUpdate() {
     const books = [];
-    if (this.state.searchQuery !== '') {
+    if (this.state.searchQuery) {
       BooksAPI.search(this.state.searchQuery).then((rawBooks) => {
         if (Array.isArray(rawBooks)) {
           rawBooks.map((rawBook) => {
