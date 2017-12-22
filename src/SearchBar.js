@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import serializeForm from 'form-serialize';
 import PropTypes from 'prop-types';
 
 import * as BooksAPI from './BooksAPI';
@@ -21,11 +20,6 @@ class SearchBar extends Component {
   state = {
     books: [],
     searchQuery: '',
-  }
-
-  getFormInput = (e) => {
-    const serializedForm = serializeForm(e.target, { hash: true });
-    return serializedForm.searchQuery;
   }
 
   fetchBooksAndUpdate() {
@@ -53,7 +47,7 @@ class SearchBar extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.fetchBooksAndUpdate(this.getFormInput(e));
+    this.fetchBooksAndUpdate();
   }
 
   inputTyped(e) {
