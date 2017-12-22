@@ -10,31 +10,58 @@ class SearchBar extends Component {
   constructor(props) {
     super(props);
 
+    this.myTimer = null;
+
+    this.changeShelf = this.changeShelf.bind(this);
+    this.fetchBooksAndUpdate = this.fetchBooksAndUpdate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.inputTyped = this.inputTyped.bind(this);
   }
 
   state = {
     books: [],
+    searchQuery: '',
+  }
+
+  getFormInput = (e) => {
+    const serializedForm = serializeForm(e.target, { hash: true });
+    return serializedForm.searchQuery;
+  }
+
+  fetchBooksAndUpdate() {
+    const books = [];
+    BooksAPI.search(this.state.searchQuery).then((rawBooks) => {
+      if (Array.isArray(rawBooks)) {
+        rawBooks.map((rawBook) => {
+          const rawBookCopy = rawBook;
+          if (this.props.idToShelfMap.has(rawBookCopy.id)) {
+            rawBookCopy.shelf = this.props.idToShelfMap.get(rawBookCopy.id);
+          }
+          books.push(rawBookCopy);
+        });
+      }
+      this.setState({
+        books,
+      });
+    });
+    clearTimeout(this.myTimer);
   }
 
   changeShelf(bookToChange, newShelf) {
     this.props.changeShelf(bookToChange, newShelf);
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
-    const serializedForm = serializeForm(e.target, { hash: true });
-    const books = [];
-    BooksAPI.search(serializedForm.searchQuery).then((rawBooks) => {
-      rawBooks.map((rawBook) => {
-        const rawBookCopy = rawBook;
-        if (this.props.idToShelfMap.has(rawBookCopy.id)) {
-          rawBookCopy.shelf = this.props.idToShelfMap.get(rawBookCopy.id);
-        }
-        books.push(rawBookCopy);
-      });
-      this.setState({ books });
+    this.fetchBooksAndUpdate(this.getFormInput(e));
+  }
+
+  inputTyped(e) {
+    this.setState({
+      searchQuery: e.target.value,
     });
+    clearTimeout(this.myTimer);
+    this.myTimer = setTimeout(this.fetchBooksAndUpdate.bind(null), 1500);
   }
 
   render() {
@@ -53,7 +80,12 @@ class SearchBar extends Component {
               Close
             </Link>
             <div className="search-books-input-wrapper">
-              <input type="text" name="searchQuery" placeholder="Search by title or author" />
+              <input
+                type="text"
+                name="searchQuery"
+                placeholder="Search by title or author"
+                onChange={this.inputTyped}
+              />
             </div>
           </div>
         </form>
